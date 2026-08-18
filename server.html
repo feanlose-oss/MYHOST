@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MineRund — Server</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b0f14;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 65px;
+      background: #111720;
+      border-bottom: 1px solid #222b36;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #55ff88;
+    }
+
+    .back {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 16px 50px;
+    }
+
+    .server-head {
+      background: #111720;
+      border: 1px solid #222b36;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .server-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-size: 25px;
+      margin-bottom: 7px;
+    }
+
+    .ip {
+      color: #8d98a5;
+      font-size: 14px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #55ff88;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #55ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #55ff88;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      opacity: .9;
+    }
+
+    .start {
+      background: #18a957;
+    }
+
+    .stop {
+      background: #d93636;
+    }
+
+    .restart {
+      background: #d89118;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #111720;
+      border: 1px solid #222b36;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .card-title {
+      color: #8d98a5;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .console {
+      background: #080b0f;
+      border: 1px solid #222b36;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .console-head {
+      background: #111720;
+      padding: 15px 18px;
+      border-bottom: 1px solid #222b36;
+      font-weight: bold;
+    }
+
+    #consoleOutput {
+      height: 330px;
+      overflow-y: auto;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #b9c3ce;
+    }
+
+    .command {
+      display: flex;
+      border-top: 1px solid #222b36;
+    }
+
+    .command input {
+      flex: 1;
+      background: #111720;
+      color: white;
+      border: none;
+      outline: none;
+      padding: 14px;
+      font-family: monospace;
+    }
+
+    .command button {
+      border-radius: 0;
+      background: #5865f2;
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .section {
+      background: #111720;
+      border: 1px solid #222b36;
+      border-radius: 15px;
+      padding: 20px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .section:hover {
+      border-color: #55ff88;
+      transform: translateY(-2px);
+    }
+
+    .section-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .section h3 {
+      margin-bottom: 7px;
+    }
+
+    .section p {
+      color: #8d98a5;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sections {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .controls button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="logo">⛏ MineRund</div>
+    <a href="dashboard.html" class="back">← Dashboard</a>
+  </header>
+
+  <main class="container">
+
+    <section class="server-head">
+
+      <div class="server-title">
+        <div>
+          <h1 id="serverName">Minecraft Server</h1>
+          <div class="ip" id="serverIP">Loading...</div>
+        </div>
+
+        <div class="status">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">ONLINE</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="start" onclick="startServer()">▶ Start</button>
+        <button class="stop" onclick="stopServer()">■ Stop</button>
+        <button class="restart" onclick="restartServer()">↻ Restart</button>
+      </div>
+
+    </section>
+
+    <section class="grid">
+
+      <div class="card">
+        <div class="card-title">RAM</div>
+        <div class="value" id="ram">0 MB</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">CPU</div>
+        <div class="value" id="cpu">0%</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Players</div>
+        <div class="value" id="players">0 / 20</div>
+      </div>
+
+    </section>
+
+    <section class="console">
+
+      <div class="console-head">
+        🖥 Server Console
+      </div>
+
+      <div id="consoleOutput">
+        <div>[MineRund] Server panel loaded.</div>
+        <div>[Server] Waiting for backend connection...</div>
+      </div>
+
+      <div class="command">
+        <input
+          type="text"
+          id="commandInput"
+          placeholder="Minecraft command yozing..."
+          autocomplete="off"
+        >
+        <button onclick="sendCommand()">Send</button>
+      </div>
+
+    </section>
+
+    <section class="sections">
+
+      <div class="section" onclick="openFiles()">
+        <div class="section-icon">📁</div>
+        <h3>Files</h3>
+        <p>Server fayllari, pluginlar va konfiguratsiyalar.</p>
+      </div>
+
+      <div class="section" onclick="openSettings()">
+        <div class="section-icon">⚙️</div>
+        <h3>Settings</h3>
+        <p>RAM, server version va boshqa sozlamalar.</p>
+      </div>
+
+      <div class="section" onclick="openPlugins()">
+        <div class="section-icon">🧩</div>
+        <h3>Plugins</h3>
+        <p>Pluginlarni boshqarish va o‘rnatish.</p>
+      </div>
+
+      <div class="section" onclick="openPlayers()">
+        <div class="section-icon">👥</div>
+        <h3>Players</h3>
+        <p>O‘yinchilar va ularning serverdagi holati.</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const serverId = params.get("id");
+
+    let serverRunning = true;
+
+    function addConsole(text) {
+      const output = document.getElementById("consoleOutput");
+
+      const line = document.createElement("div");
+      line.textContent = text;
+
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function updateStatus(status) {
+      const text = document.getElementById("statusText");
+      const dot = document.getElementById("statusDot");
+
+      if (status === "online") {
+        text.textContent = "ONLINE";
+        text.style.color = "#55ff88";
+        dot.style.background = "#55ff88";
+        dot.style.boxShadow = "0 0 10px #55ff88";
+        serverRunning = true;
+      } else {
+        text.textContent = "OFFLINE";
+        text.style.color = "#ff5555";
+        dot.style.background = "#ff5555";
+        dot.style.boxShadow = "0 0 10px #ff5555";
+        serverRunning = false;
+      }
+    }
+
+    function startServer() {
+      if (serverRunning) {
+        addConsole("[MineRund] Server is already running.");
+        return;
+      }
+
+      updateStatus("online");
+      addConsole("[MineRund] Starting server...");
+    }
+
+    function stopServer() {
+      if (!serverRunning) {
+        addConsole("[MineRund] Server is already offline.");
+        return;
+      }
+
+      updateStatus("offline");
+      addConsole("[MineRund] Stopping server...");
+    }
+
+    function restartServer() {
+      addConsole("[MineRund] Restarting server...");
+
+      updateStatus("offline");
+
+      setTimeout(() => {
+        updateStatus("online");
+        addConsole("[MineRund] Server started.");
+      }, 1500);
+    }
+
+    function sendCommand() {
+      const input = document.getElementById("commandInput");
+      const command = input.value.trim();
+
+      if (!command) return;
+
+      addConsole("> " + command);
+
+      input.value = "";
+    }
+
+    document
+      .getElementById("commandInput")
+      .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          sendCommand();
+        }
+      });
+
+    function openFiles() {
+      window.location.href = "files.html?id=" + encodeURIComponent(serverId || "");
+    }
+
+    function openSettings() {
+      window.location.href = "settings.html?id=" + encodeURIComponent(serverId || "");
+    }
+
+    function openPlugins() {
+      window.location.href = "plugins.html?id=" + encodeURIComponent(serverId || "");
+    }
+
+    function openPlayers() {
+      window.location.href = "players.html?id=" + encodeURIComponent(serverId || "");
+    }
+
+    /*
+      Hozircha demo ma'lumotlar.
+      Keyingi bosqichda bular Supabase'dan olinadi.
+    */
+
+    document.getElementById("serverName").textContent =
+      "MineRund Server";
+
+    document.getElementById("serverIP").textContent =
+      "play.minerund.local";
+
+    document.getElementById("ram").textContent =
+      "2.4 GB";
+
+    document.getElementById("cpu").textContent =
+      "18%";
+
+    document.getElementById("players").textContent =
+      "0 / 20";
+  </script>
+
+</body>
+</html>
