@@ -337,5 +337,50 @@ form.addEventListener("submit", (event) => {
 
 </script>
 
+    <script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const supabase = createClient(
+    "https://khyddtvdbapcovdddrbs.supabase.co",
+    "sb_publishable_Ss52VEnVK_Zk05A6T7PpcQ_fsj_DbJt"
+);
+
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+const submitButton = document.querySelector(".submit");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    submitButton.disabled = true;
+    submitButton.textContent = "LOGGING IN...";
+
+    message.style.display = "none";
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) {
+        message.style.display = "block";
+        message.textContent = error.message;
+        submitButton.disabled = false;
+        submitButton.textContent = "LOGIN";
+        return;
+    }
+
+    message.style.display = "block";
+    message.textContent = "Login muvaffaqiyatli! Dashboard ochilmoqda...";
+
+    setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 800);
+});
+    </script>
+
 </body>
-</html>
+    </html>
