@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>MineHost — Create Server</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#050807;
+    --panel:#0b110e;
+    --panel2:#101812;
+    --border:#1d3024;
+    --green:#39ff88;
+    --green2:#16c967;
+    --text:#f2fff6;
+    --muted:#819188;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 50% 0%,rgba(57,255,136,.09),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+    height:68px;
+    border-bottom:1px solid var(--border);
+    background:rgba(5,8,7,.9);
+    backdrop-filter:blur(18px);
+}
+
+.nav{
+    max-width:1100px;
+    height:100%;
+    margin:auto;
+    padding:0 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:900;
+}
+
+.logo-box{
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--green),var(--green2));
+    color:#031108;
+}
+
+.logo span{
+    color:var(--green);
+}
+
+.back{
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13px;
+}
+
+.back:hover{
+    color:var(--green);
+}
+
+.container{
+    max-width:850px;
+    margin:auto;
+    padding:45px 20px 80px;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.title small{
+    color:var(--green);
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.title h1{
+    margin-top:9px;
+    font-size:36px;
+    letter-spacing:-1.5px;
+}
+
+.title p{
+    margin:10px auto 0;
+    max-width:550px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+}
+
+.card{
+    padding:28px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:linear-gradient(145deg,#0d1510,#090e0b);
+    margin-bottom:18px;
+}
+
+.card-title{
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:20px;
+}
+
+.field{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#b9c8bf;
+    font-size:11px;
+    font-weight:800;
+}
+
+input,
+select{
+    width:100%;
+    height:48px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    outline:none;
+    background:#070c09;
+    color:white;
+    padding:0 13px;
+    font-size:14px;
+}
+
+input:focus,
+select:focus{
+    border-color:rgba(57,255,136,.6);
+    box-shadow:0 0 0 3px rgba(57,255,136,.05);
+}
+
+select option{
+    background:#0b110e;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.software{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.software input{
+    display:none;
+}
+
+.software label{
+    margin:0;
+    padding:16px 10px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    text-align:center;
+    cursor:pointer;
+    background:#080e0a;
+    transition:.2s;
+}
+
+.software label strong{
+    display:block;
+    color:white;
+    font-size:13px;
+}
+
+.software label span{
+    display:block;
+    margin-top:5px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.software input:checked + label{
+    border-color:var(--green);
+    background:rgba(57,255,136,.07);
+    box-shadow:0 0 20px rgba(57,255,136,.06);
+}
+
+.resources{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.resource{
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#080e0a;
+}
+
+.resource-name{
+    color:var(--muted);
+    font-size:10px;
+    font-weight:800;
+}
+
+.resource-value{
+    margin-top:7px;
+    color:var(--green);
+    font-size:20px;
+    font-weight:900;
+}
+
+.resource-note{
+    margin-top:4px;
+    color:#5e6d64;
+    font-size:9px;
+}
+
+.notice{
+    margin-top:18px;
+    padding:13px;
+    border-radius:10px;
+    border:1px solid rgba(57,255,136,.14);
+    background:rgba(57,255,136,.04);
+    color:#91a59a;
+    font-size:11px;
+    line-height:1.5;
+}
+
+.submit{
+    width:100%;
+    height:52px;
+    border:0;
+    border-radius:11px;
+    background:linear-gradient(135deg,var(--green),var(--green2));
+    color:#031108;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.submit:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 30px rgba(57,255,136,.15);
+}
+
+.message{
+    display:none;
+    margin-top:15px;
+    padding:13px;
+    border-radius:10px;
+    text-align:center;
+    font-size:12px;
+}
+
+.success{
+    display:block;
+    color:var(--green);
+    background:rgba(57,255,136,.06);
+    border:1px solid rgba(57,255,136,.15);
+}
+
+.error{
+    display:block;
+    color:#ff7272;
+    background:rgba(255,98,98,.06);
+    border:1px solid rgba(255,98,98,.15);
+}
+
+@media(max-width:650px){
+
+    .container{
+        padding:30px 14px 60px;
+    }
+
+    .title h1{
+        font-size:29px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .software{
+        grid-template-columns:1fr;
+    }
+
+    .resources{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="nav">
+
+<div class="logo">
+    <div class="logo-box">⛏</div>
+    Mine<span>Host</span>
+</div>
+
+<a href="dashboard.html" class="back">
+    ← Dashboard
+</a>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<div class="title">
+
+    <small>Free Minecraft Hosting</small>
+
+    <h1>Create your server</h1>
+
+    <p>
+        Minecraft serveringiz uchun asosiy
+        sozlamalarni tanlang.
+    </p>
+
+</div>
+
+
+<form id="serverForm">
+
+
+<div class="card">
+
+    <div class="card-title">
+        🎮 Server Information
+    </div>
+
+
+    <div class="field">
+
+        <label for="serverName">
+            SERVER NAME
+        </label>
+
+        <input
+            id="serverName"
+            type="text"
+            maxlength="30"
+            placeholder="My Survival Server"
+            required
+        >
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label for="version">
+                MINECRAFT VERSION
+            </label>
+
+            <select id="version">
+
+                <option value="1.21.11">
+                    1.21.11
+                </option>
+
+                <option value="1.21.1">
+                    1.21.1
+                </option>
+
+                <option value="1.20.1">
+                    1.20.1
+                </option>
+
+                <option value="1.16.5">
+                    1.16.5
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="type">
+                SERVER TYPE
+            </label>
+
+            <select id="type">
+
+                <option value="java">
+                    Java Edition
+                </option>
+
+                <option value="bedrock">
+                    Bedrock Edition
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-title">
+        ⚡ Server Software
+    </div>
+
+
+    <div class="software">
+
+        <input
+            type="radio"
+            id="paper"
+            name="software"
+            value="Paper"
+            checked
+        >
+
+        <label for="paper">
+
+            <strong>Paper</strong>
+            <span>Plugins</span>
+
+        </label>
+
+
+        <input
+            type="radio"
+            id="fabric"
+            name="software"
+            value="Fabric"
+        >
+
+        <label for="fabric">
+
+            <strong>Fabric</strong>
+            <span>Mods</span>
+
+        </label>
+
+
+        <input
+            type="radio"
+            id="vanilla"
+            name="software"
+            value="Vanilla"
+        >
+
+        <label for="vanilla">
+
+            <strong>Vanilla</strong>
+            <span>Official</span>
+
+        </label>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-title">
+        💻 Free Resources
+    </div>
+
+
+    <div class="resources">
+
+        <div class="resource">
+
+            <div class="resource-name">
+                RAM
+            </div>
+
+            <div class="resource-value">
+                15 GB
+            </div>
+
+            <div class="resource-note">
+                Maximum allocation
+            </div>
+
+        </div>
+
+
+        <div class="resource">
+
+            <div class="resource-name">
+                STORAGE
+            </div>
+
+            <div class="resource-value">
+                12 GB
+            </div>
+
+            <div class="resource-note">
+                SSD storage
+            </div>
+
+        </div>
+
+
+        <div class="resource">
+
+            <div class="resource-name">
+                CPU
+            </div>
+
+            <div class="resource-value">
+                45 vCPU
+            </div>
+
+            <div class="resource-note">
+                Virtual CPU
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="notice">
+        ℹ️ Bu resurslar hozircha MineHost interfeysida
+        ko‘rsatilmoqda. Haqiqiy server resurslarini keyingi
+        backend/infratuzilma bosqichida ulaymiz.
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <button
+        type="submit"
+        class="submit"
+        id="submit"
+    >
+        🚀 CREATE SERVER
+    </button>
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+</div>
+
+
+</form>
+
+</main>
+
+
+<script type="module">
+
+import {
+    createClient
+} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+const SUPABASE_URL =
+    "https://khyddtvdbapcovdddrbs.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Ss52VEnVK_Zk05A6T7PpcQ_fsj_DbJt";
+
+
+const supabase =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+const form =
+    document.getElementById("serverForm");
+
+const message =
+    document.getElementById("message");
+
+const submit =
+    document.getElementById("submit");
+
+
+async function checkUser(){
+
+    const {
+        data,
+        error
+    } = await supabase.auth.getUser();
+
+    if(error || !data.user){
+
+        window.location.href =
+            "login.html";
+
+    }
+
+}
+
+
+checkUser();
+
+
+form.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+        const serverName =
+            document
+            .getElementById("serverName")
+            .value
+            .trim();
+
+        const version =
+            document
+            .getElementById("version")
+            .value;
+
+        const type =
+            document
+            .getElementById("type")
+            .value;
+
+        const software =
+            document
+            .querySelector(
+                'input[name="software"]:checked'
+            )
+            .value;
+
+
+        if(serverName.length < 3){
+
+            message.className =
+                "message error";
+
+            message.textContent =
+                "Server nomi kamida 3 ta belgidan iborat bo‘lishi kerak.";
+
+            return;
+
+        }
+
+
+        submit.disabled = true;
+
+        submit.textContent =
+            "CREATING SERVER...";
+
+
+        /*
+         * Hozircha faqat tayyorlov bosqichi.
+         * Keyingi bosqichda database + server node
+         * bilan haqiqiy server yaratiladi.
+         */
+
+        setTimeout(() => {
+
+            message.className =
+                "message success";
+
+            message.textContent =
+                "Server sozlamalari qabul qilindi. Keyingi bosqichda haqiqiy server yaratish tizimi ulanadi.";
+
+            submit.disabled = false;
+
+            submit.textContent =
+                "🚀 CREATE SERVER";
+
+        },800);
+
+    }
+);
+
+</script>
+
+</body>
+          </html>
